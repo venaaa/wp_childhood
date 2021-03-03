@@ -503,6 +503,33 @@
                 </div>
             </div>
         </div>
+
+<?php
+    function print_hello($text, $name) {
+        echo 'Hello wrold' . $text . ' ' . $name . '<br>';
+    };
+
+    add_action('my_hook', 'print_hello', 10, 2);
+
+    do_action( 'my_hook', 'dear customer', 'Serge' );
+
+    function my_filter_function($str) {
+        return 'Hello ' . $str . '<br>';
+    };
+
+    add_filter( 'my_filter', 'my_filter_function', 15);
+
+    echo apply_filters( 'my_filter', 'World' );
+
+    remove_filter( 'my_filter', 'my_filter_function', 15 ); // если в add_filter стоит приоритет "в данном случае 15" то и тут нужно указать приоритет, иначе не сработает" 
+
+    echo apply_filters( 'my_filter', 'World' ); 
+
+    //remove_action()
+
+
+?>
+
 <?php
     get_footer();
 ?>
