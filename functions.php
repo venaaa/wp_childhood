@@ -13,5 +13,5 @@ function childhood_scripts() {
 };
 
 
-
+add_theme_support( 'custom-logo' );
 ?>

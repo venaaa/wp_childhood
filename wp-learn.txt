@@ -1,0 +1,181 @@
+1. Создать БД
+	Дать имя БД
+	Создать пользователя админа
+2. Установка WordPress
+
+3. Закидываем верстку/сайт в "темы" wordpress
+	/wp-content/themes/*имя*/
+	3.1 Закидываем сюда style.css с комментарием:
+		/*
+		Theme Name: *имя*
+		*/
+		и css-свойствами
+	3.2 Добавляем index.php
+
+4. Закидываем верстку из .html в index.php
+	4.1 создаем папку assets и закидываем туда fonts/css/img/js
+
+5. Подвязываем стили, скрипты и все остальное к странице
+	5.1 в <head> страницы добавляем:
+		<?php
+			wp_head();
+		?>
+
+	5.2 в <footer> добавляем:
+		<?php
+			wp_footer();
+		?>
+
+	5.3 настраиваем хуки в functions.php
+		<?php
+		add_action('wp_enqueue_scripts', 'childhood_styles');
+		add_action('wp_enqueue_scripts', 'childhood_scripts');
+
+		function childhood_styles() { // стили
+    			wp_enqueue_style( 'childhood-style', get_stylesheet_uri() ); 
+		};
+
+		function childhood_scripts() { // скрипты
+   			wp_enqueue_script( 'childhood-scripts', get_template_directory_uri() . '/assets/js/main.min.js', array(), null, true); 
+		};
+
+		?> 
+
+6. Правим пути на изображения и другие файлы в index.php
+	<?php echo bloginfo('template_url');?>/assets/img/
+
+	и в style.css
+		assets/fonts...
+
+7. Дробим нашу "тему" на мелкие функциональные кусочки, а после собираем воедино в одном файле.
+	7.1 вырезаем и закидываем <head> и кусочек .header из <body> из index.php в header.php
+	в index.php на вырезанное место вставляем <?php get_header(); ?>
+
+	7.2 вырезаем и закидываем <footer> и все важные блоки кода (модальные окна и прочие контакты) из index.php в footer.php
+	в index.php на вырезанное место вставляем <?php get_footer(); ?>
+
+8. 
+
+
+
+
+
+
+// Готовая, сформированная, правильно структурированная тема на underscores.me и закидываем в папку themes в wordpress	
+
+
+
+
+
+
+
+// Кастомные хуки
+
+<?php
+    function print_hello() {
+        echo 'Hello wrold';
+    };
+
+    add_action('my_hook', 'print_hello');
+
+    do_action( 'my_hook' ); // do_action должно находится только после function..add_action
+
+?>
+
+=====================================================================================================================
+
+<?php
+    function print_hello() {
+        echo 'Hello wrold' . '<br>';
+    };
+    function print_hello_1() {
+        echo 'Hello wrold_1' . '<br>';
+    };
+    function print_hello_2() {
+        echo 'Hello wrold_2' . '<br>';
+    };
+
+    add_action('my_hook', 'print_hello', 15); // 15, 10, 5 это приоритеты выполнения. Чем больше число, тем позднее выполнится событие.
+    add_action('my_hook', 'print_hello_1', 10);
+    add_action('my_hook', 'print_hello_2', 5);
+
+    do_action( 'my_hook' );
+?>
+
+=============================================================================================================================
+
+С аргументами
+<?php
+    function print_hello($text, $name) {
+        echo 'Hello wrold' . $text . ' ' . $name;
+    };
+
+    add_action('my_hook', 'print_hello', 10, 2);
+
+    do_action( 'my_hook', 'dear customer', 'Serge' );
+?>
+
+=====================================================================================================================
+
+ФИЛЬТРЫ
+
+    function my_filter_function($str) {
+        return 'Hello ' . $str;
+    };
+
+    add_filter( 'my_filter', 'my_filter_function' );
+
+    echo apply_filters( 'my_filter', 'World' );
+
+=====================================================================================
+
+удалить фильтры
+
+    add_filter( 'my_filter', 'my_filter_function', 15);
+
+    echo apply_filters( 'my_filter', 'World' );
+
+    remove_filter( 'my_filter', 'my_filter_function', 15 ); // если в add_filter стоит приоритет "в данном случае 15" то и тут нужно указать приоритет, иначе не сработает" 
+
+    echo apply_filters( 'my_filter', 'World' ); 
+
+    //remove_action()
+
+
+
+
+=============================================
+	НЕ СЕЙЧАС!
+    add_filter( 'nav_menu_link_attributes', 'filter_nav_menu_link_attributes', 10, 3 );
+
+    function filter_nav_menu_link_attributes( $atts, $item, $args ) {
+        if ( $args->menu === 'Main' ) {
+            $atts['class'] = 'header__nav-item-active';
+
+            if ( $item->current ) {
+                $atts['class'] .= ' header__nav_item-active';
+            }
+
+            if ( $item->ID === 106 && ( in_category( 'soft_toys' ) || in_category( ' edu_toys' ))) {
+                $atts['class'] .= ' header__nav-item-active';
+            }
+        }
+
+        return $atts;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
